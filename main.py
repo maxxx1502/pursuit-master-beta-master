@@ -22,8 +22,8 @@ class Mina(Widget):
         self.add_widget(BoxLayout())
         self.imgm = Image(source="res/mine.png", pos=(600, 600))
         self.add_widget(self.imgm)
-        self.imgm.x = self.imgm
-        self.imgm.y = self.imgm
+        self.imgm.x = ObjectProperty()
+        self.imgm.y = ObjectProperty()
 
 
     def update(self, pos, my_grid):
