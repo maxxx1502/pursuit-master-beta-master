@@ -15,10 +15,32 @@ W,H = 700, 700
 TILE = 45
 GAME_RES = W * TILE, H * TILE
 
-class GridGame(Widget):
+class Mina(Widget):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.orientation = "vertical"
+        self.add_widget(BoxLayout())
+        self.imgm = Image(source="res/mine.png", pos=(600, 600))
+        self.add_widget(self.imgm)
+        self.imgm.x = self.imgm
+        self.imgm.y = self.imgm
+
+
+    def update(self, pos, my_grid):
+        dx = my_grid.x
+        dy = my_grid.y
+        if self.x == dx and self.y == dy:
+            self.remove_widget(self.imgm)
+
+
+class GridGame(Mina, Widget):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        Mina.__init__(**kwargs)
+        Widget.__init__(**kwargs)
+        # Здесь надо решить проблему с наследованием координат
+
 
         self.orientation = 'vertical'
 
@@ -32,6 +54,7 @@ class GridGame(Widget):
 
         self.key_pressed = set()
         self.speed = 10
+        self.life = 10
 
         self.update_event = Clock.schedule_interval(self.update, 1.0 / 60.0)
         Window.bind(on_key_down=self.on_key_down)
@@ -72,6 +95,12 @@ class GridGame(Widget):
     def on_key_up(self, window, key, *args):
         self.key_pressed.remove(self.key_codes.get(key, ''))
 
+    def damage_mine(self):
+        if self.life > 0:
+            if self.img.x == self.imgm.x and self.img.y == self.imgm.y:
+                self.life -= 1
+        else:
+            pass
     # def update_button(self, dt):
     #     if dt == 'up':
     #         pos = self.img.y + self.speed
@@ -125,26 +154,15 @@ class Diamond(Widget):
         self.img = Image(source = "res/diamond.png", pos = (500, 500))
         self.add_widget(self.img)
 
-class Mina(Widget):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.orientation = "vertical"
-        self.add_widget(BoxLayout())
-        self.img = Image(source="res/mine.png", pos=(600, 600))
-        self.add_widget(self.img)
 
-    def update(self, pos, my_grid):
-        dx = my_grid.x
-        dy = my_grid.y
-        if self.x == dx and self.y == dy:
-            self.remove_widget(self.img)
 
 
 class PursuitGame(Widget):
+    my_mina = Mina()
     my_grid = GridGame()
     my_boss = Boss()
     my_diamond = Diamond()
-    # my_mina = Mina(my_grid)
+
 
 
 class PursuitApp(App):
